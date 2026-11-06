@@ -2,7 +2,8 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!-- Mở khóa pinch-to-zoom cho Smartphone -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <title>Ngũ Linh Tứ Sắc – Thấu Chân Tâm</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
@@ -54,8 +55,9 @@ body::after {
   z-index: 100;
 }
 
+/* Mở rộng max-width giúp giao diện thoáng hơn */
 .wrap {
-  max-width: 480px;
+  max-width: 650px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
@@ -433,6 +435,25 @@ select option { background: var(--panel); color: var(--gold-light); }
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: var(--ink); }
 ::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 2px; }
+
+/* ─── TỐI ƯU ĐỌC TRÊN SMARTPHONE ─── */
+@media (max-width: 600px) {
+  body {
+    font-size: 16px;
+    padding: 10px 8px 30px;
+  }
+  .wrap {
+    max-width: 100%;
+  }
+  .khom-block {
+    padding: 12px 10px !important;
+  }
+  /* Tăng cỡ chữ kết quả trả về từ các module */
+  .khom-block div {
+    font-size: 15px !important;
+    line-height: 1.7 !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -443,7 +464,7 @@ select option { background: var(--panel); color: var(--gold-light); }
   <div class="title-banner">
     <div class="title-orn">✦ &nbsp; Huyền Học Phương Đông &nbsp; ✦</div>
     <div class="title-main">Ngũ Linh Tứ Sắc</div>
-    <div class="title-sub">Thấu Chân Kinh</div>
+    <div class="title-sub">Thấu Chân Tâm</div>
     <div class="divider-orn">⬡</div>
   </div>
 
@@ -722,8 +743,7 @@ window.setupNgulinh = setupNgulinh;
 window.flipCard = flipCard;
 window.copyToClipboard = copyToClipboard;
 </script>
-
-<!--Module kết nối dữ liệu (Cùng thư mục gốc trong Repository) -->
+<!-- Module kết nối dữ liệu (Cùng thư mục gốc trong Repository) -->
 <script src="ketqua_bts.js" defer></script>
 </body>
 </html>
