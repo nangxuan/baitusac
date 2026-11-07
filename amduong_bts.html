@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quẻ Âm Dương – Tứ Sắc</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#c9a84c;--gold-light:#e8c97a;--gold-dark:#8b6914;--ink:#0d0d0d;--panel:#1a1208;--panel-light:#241a0a;--border:rgba(201,168,76,.4)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'EB Garamond',Georgia,serif;background:var(--ink);min-height:100vh;padding:20px 12px 40px;color:#e9dfc4}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(201,168,76,.06),transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(139,26,26,.08),transparent 50%);pointer-events:none}
+.wrap{max-width:480px;margin:0 auto;position:relative}
+.title-banner{text-align:center;padding:26px 20px 20px;margin-bottom:18px;border:1px solid var(--border);border-radius:4px;background:linear-gradient(180deg,var(--panel-light),var(--panel))}
+.title-orn{font-size:13px;color:var(--gold);letter-spacing:6px;opacity:.7;margin-bottom:8px}
+.title-main{font-family:'Cinzel Decorative',cursive;font-size:clamp(18px,5vw,26px);color:var(--gold-light);text-shadow:0 0 30px rgba(201,168,76,.5)}
+.title-sub{font-family:'Cinzel',serif;font-size:11px;color:var(--gold);letter-spacing:4px;opacity:.6;margin-top:6px}
+.panel{background:var(--panel-light);border:1px solid var(--border);border-radius:4px;padding:16px;margin-bottom:16px}
+.row{display:flex;gap:10px}
+select{flex:1;width:100%;padding:13px 10px;background:var(--panel);border:1px solid var(--border);border-radius:3px;color:var(--gold-light);font-family:'Cinzel',serif;font-size:12px}
+.btn{padding:13px 18px;background:linear-gradient(135deg,var(--gold-dark),var(--gold),var(--gold-dark));color:var(--ink);border:1px solid var(--gold-light);border-radius:3px;font-family:'Cinzel',serif;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;white-space:nowrap}
+.btn:disabled{opacity:.5;cursor:wait}
+.sec{font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:var(--gold);opacity:.85;text-align:center;margin:20px 0 10px}
+.info{font-size:15px;color:rgba(201,168,76,.8);text-align:center;margin-bottom:10px;min-height:22px;font-style:italic}
+/* bảng 7 hàng x 4 khu */
+.board{display:grid;grid-template-columns:62px repeat(4,1fr);gap:6px}
+.rl{font-family:'Cinzel',serif;font-size:10px;color:var(--gold);display:flex;align-items:center;letter-spacing:.5px}
+.slot{height:44px;border-radius:4px;border:1px dashed rgba(201,168,76,.25);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:11px;font-weight:700;position:relative;transition:all .25s}
+.slot.down{background:repeating-linear-gradient(45deg,#2a1f08,#2a1f08 5px,#1f1706 5px,#1f1706 10px);border:1px solid #5a4510;color:transparent}
+.slot.up{border:1px solid var(--c);color:var(--c);background:rgba(255,255,255,.04);animation:pop .3s}
+.slot.empty{border:1px dashed var(--gold);box-shadow:0 0 10px rgba(201,168,76,.4) inset}
+.slot.cur{box-shadow:0 0 14px var(--gold)}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+/* kết quả */
+.verdict{text-align:center;padding:16px 12px;border:1px solid var(--border);border-radius:4px;background:var(--panel-light);margin-bottom:14px}
+.v-big{font-family:'Cinzel',serif;font-size:15px;letter-spacing:2px;font-weight:700;margin-bottom:8px}
+.v-ok{color:#6dbe8c}.v-warn{color:var(--gold-light)}.v-bad{color:#f08080}
+.v-txt{font-size:16px;line-height:1.6}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid rgba(201,168,76,.18);font-size:15px}
+.kv b{font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;color:var(--gold-light)}
+.log{max-height:150px;overflow:auto;font-size:13px;line-height:1.5;color:rgba(233,223,196,.7);background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:8px 10px;margin-top:10px}
+#kqPanel{margin-top:6px}
+.kq-item{border-top:1px solid rgba(201,168,76,.18);padding:11px 0}
+.kq-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.kq-tag{font-family:'Cinzel',serif;font-size:10px;color:var(--gold);opacity:.8;letter-spacing:1px}
+.kq-chip{font-family:'Cinzel',serif;font-size:11px;font-weight:700;border:1px solid;border-radius:3px;padding:2px 8px}
+.kq-src{font-family:'Cinzel',serif;font-size:9px;color:var(--gold);opacity:.55;margin-left:auto;letter-spacing:1px}
+.kq-sub{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--gold);opacity:.75;margin:14px 0 2px}
+.kq-txt{font-size:15px;line-height:1.65;white-space:pre-wrap}
+.kq-lbl{font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;color:var(--gold-light);opacity:.8;display:block;margin:6px 0 2px}
+.kq-miss{opacity:.45}
+details{background:var(--panel-light);border:1px solid var(--border);border-radius:4px;margin-bottom:12px}
+summary{cursor:pointer;padding:13px 14px;font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold-light)}
+.kq-body{padding:0 14px 14px}
+.copy{width:100%;padding:14px;margin-top:6px;background:linear-gradient(135deg,#3a2a0a,#5a4010,#3a2a0a);color:var(--gold-light);border:1px solid var(--gold);border-radius:4px;font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;font-weight:700;cursor:pointer}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="title-banner">
+    <div class="title-orn">✦ &nbsp; Huyền Học Phương Đông &nbsp; ✦</div>
+    <div class="title-main">Quẻ Âm Dương</div>
+    <div class="title-sub">Tứ Sắc · Trận Pháp 28 Khu</div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <select id="color">
+        <option value="XANH">✦ CÔNG DANH — XANH</option>
+        <option value="VÀNG">✦ TÀI LỘC — VÀNG</option>
+        <option value="TRẮNG">✦ VẬN HẠN — TRẮNG</option>
+        <option value="ĐỎ">✦ TÌNH DUYÊN — ĐỎ</option>
+      </select>
+      <button class="btn" id="go">BỐC QUẺ</button>
+    </div>
+  </div>
+
+  <div class="info" id="info">Chọn chủ đề (một việc cần xin) rồi bấm BỐC QUẺ.</div>
+  <div class="board" id="board"></div>
+
+  <div id="result" class="hide">
+    <div class="sec">✦ KẾT LUẬN QUẺ ✦</div>
+    <div class="verdict" id="verdict"></div>
+    <div id="leftoverBox" class="hide">
+      <div class="sec">✦ CÁC LÁ CÒN ĐỌNG (TRÁI → PHẢI) ✦</div>
+      <div id="kqPanel"></div>
+    </div>
+    <button class="copy" id="copyBtn">📜 &nbsp; SAO CHÉP KẾT QUẢ</button>
+    <details style="margin-top:12px"><summary>NHẬT KÝ VÒNG CHUYỀN</summary><div class="kq-body"><div class="log" id="log" style="border:0;padding:0"></div></div></details>
+  </div>
+</div>
+
+<script src="ketqua_bts.js"></script>
+<script>
+/* ═════════ RANDOM (crypto) ═════════ */
+function secureRandom(){const b=new Uint32Array(1);crypto.getRandomValues(b);return b[0]/4294967296}
+function secureInt(n){return Math.floor(secureRandom()*n)}
+function secureShuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=secureInt(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
+
+const PIECES=['TƯỚNG','SĨ','TƯỢNG','XE','PHÁO','NGỰA','CHỐT'];
+const MONTHS=[2,4,6,8,10,12,14];
+const HEX={'XANH':'#6dbe8c','VÀNG':'#e8c97a','TRẮNG':'#d0d0d0','ĐỎ':'#f08080'};
+
+/* ═════════ MÔ PHỎNG VÒNG CHUYỀN ═════════
+   slot = row*4 + col ; row = chỉ số quân (0..6)
+   - Xào 28 lá, úp vào 28 khu
+   - Bốc lá ở khu NGẪU NHIÊN → lá ĐẦU TIÊN (quyết định thời gian), khu đó bỏ trống (reserved)
+   - Lật lá cầm trên tay, đặt vào khu kế tiếp của hàng quân đó
+     (hàng chứa khu reserved: bỏ qua khu reserved, khu này dành cho lá cuối cùng của hàng)
+   - Đặt vào khu úp → lật lá đó lên tiếp tục; đặt vào khu reserved → DỪNG
+*/
+function simulate(){
+  const deck=[];PIECES.forEach(p=>{for(let i=0;i<4;i++)deck.push(p)});
+  const slots=secureShuffle(deck);                 // slots[i] = quân đang úp ở khu i
+  const start=secureInt(28);
+  const reserved=start, resRow=Math.floor(start/4);
+  const order=r=>{                                  // thứ tự khu được điền của hàng r
+    const cols=[0,1,2,3].map(c=>r*4+c);
+    return r===resRow?cols.filter(s=>s!==reserved).concat([reserved]):cols;
+  };
+  const filled=Array(7).fill(0);
+  const faceUp=Array(28).fill(null);                // quân đã lật ngửa tại khu
+  const down=Array(28).fill(true);
+  const steps=[];
+  let cur=slots[start]; down[start]=false;
+  steps.push({type:'start',slot:start,piece:cur});
+  const first=cur;
+  let guard=0;
+  while(guard++<60){
+    const r=PIECES.indexOf(cur);
+    const tgt=order(r)[filled[r]++];
+    faceUp[tgt]=cur;
+    steps.push({type:'place',piece:cur,slot:tgt,nth:filled[r]});
+    if(tgt===reserved)break;
+    cur=slots[tgt]; down[tgt]=false;
+    steps.push({type:'lift',slot:tgt,piece:cur});
+  }
+  const left=[];
+  for(let i=0;i<28;i++)if(down[i])left.push(slots[i]);
+  return {slots,start,first,steps,faceUp,down,left,resRow};
+}
+
+/* ═════════ UI ═════════ */
+const $=id=>document.getElementById(id);
+const boardEl=$('board');
+let slotEls=[];
+function buildBoard(){
+  boardEl.innerHTML='';slotEls=[];
+  PIECES.forEach((p,r)=>{
+    const l=document.createElement('div');l.className='rl';l.textContent=p;boardEl.appendChild(l);
+    for(let c=0;c<4;c++){const d=document.createElement('div');d.className='slot down';boardEl.appendChild(d);slotEls[r*4+c]=d}
+  });
+}
+buildBoard();
+
+let lastText='';
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+async function go(){
+  const color=$('color').value;
+  $('go').disabled=true;$('result').classList.add('hide');
+  buildBoard();$('info').textContent='Đã xào 28 lá, úp xuống 28 khu…';
+  await sleep(500);
+  const sim=simulate();
+  const log=[];
+  for(const s of sim.steps){
+    if(s.type==='start'){
+      slotEls[s.slot].className='slot empty';
+      $('info').textContent='Bốc lá đầu tiên: '+s.piece+' (khu '+(Math.floor(s.slot/4)+1)+'.'+(s.slot%4+1)+' bỏ trống)';
+      log.push('Bốc lá đầu tiên: '+s.piece+' từ khu hàng '+PIECES[Math.floor(s.slot/4)]+' #'+(s.slot%4+1)+' → khu này bỏ trống');
+    }else if(s.type==='place'){
+      const el=slotEls[s.slot];
+      el.className='slot up cur';el.style.setProperty('--c',HEX[color]);el.textContent=s.piece;
+      log.push('Đặt '+s.piece+' (lá thứ '+s.nth+') vào hàng '+s.piece+' #'+(s.slot%4+1));
+      await sleep(260);el.classList.remove('cur');
+    }else{
+      $('info').textContent='Lật lá úp: '+s.piece;
+      log.push('Lật lá úp ở khu đó: '+s.piece);
+    }
+  }
+  const placed=28-sim.left.length;
+  $('info').textContent=sim.left.length===0?'Hoàn tất — mọi lá đã về đúng khu.':'Dừng: còn '+sim.left.length+' lá chưa trả về.';
+  log.push('Kết thúc: đã trả '+placed+'/28 lá, còn úp '+sim.left.length+' lá.');
+  $('log').innerHTML=log.map(esc).join('<br>');
+  await showResult(sim,color);
+  $('go').disabled=false;
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+async function showResult(sim,color){
+  const n=sim.left.length, fi=PIECES.indexOf(sim.first), months=MONTHS[fi];
+  let cls,title,desc;
+  if(n===0){cls='v-ok';title='QUẺ THÀNH TỰU';desc='Mọi lá đều về đúng khu — việc xin chắc chắn thành tựu, không gặp trở ngại.'}
+  else if(n<=7){cls='v-warn';title='QUẺ CÓ TRỞ NGẠI';desc='Còn '+n+' lá đọng lại. Việc xin gặp trở ngại; các lá còn đọng cho biết nguyên nhân và khả năng cứu vãn.'}
+  else{cls='v-bad';title='QUẺ BẤT THÀNH';desc='Còn '+n+' lá đọng lại (trên 7 lá) — việc xin bất thành, không phương cứu vãn.'}
+  const timeLbl=n===0?'Thời gian thành tựu':(n<=7?'Thời gian cứu vãn':'Thời gian (tham khảo)');
+  $('verdict').innerHTML='<div class="v-big '+cls+'">'+title+'</div><div class="v-txt">'+esc(desc)+'</div>'+
+    '<div class="kv" style="margin-top:12px"><b>LÁ ĐẦU TIÊN</b><span>'+sim.first+'</span></div>'+
+    '<div class="kv"><b>'+timeLbl.toUpperCase()+'</b><span>'+months+' tháng</span></div>'+
+    '<div class="kv"><b>SỐ LÁ CÒN ĐỌNG</b><span>'+n+' / 28</span></div>';
+  $('result').classList.remove('hide');
+
+  let txt=['QUẺ ÂM DƯƠNG — TỨ SẮC','Chủ đề màu: '+color,title,desc,'Lá đầu tiên: '+sim.first+' → '+timeLbl+': '+months+' tháng','Số lá còn đọng: '+n+'/28'];
+
+  if(n>=1&&n<=7){
+    // lật các lá còn lại, đặt từ PHẢI sang TRÁI → thứ tự TRÁI→PHẢI là đảo ngược thứ tự lật
+    const flipped=secureShuffle(sim.left).map(p=>({piece:p,color:color,m:secureRandom()>0.5?'Đ':'N'}));
+    const ltr=[...flipped].reverse();
+    $('leftoverBox').classList.remove('hide');
+    $('kqPanel').innerHTML='<div class="kq-msg" style="text-align:center;opacity:.7">Đang tải dữ liệu File01 … File06 …</div>';
+    txt.push('','Các lá còn đọng (lật theo thứ tự phải → trái): '+flipped.map(c=>c.piece+' '+c.color+' '+c.m).join(', '));
+    try{
+      const db=await KetQua.loadAll();
+      const A=KetQua.api, r=A.analyzeCards(db,ltr);
+      txt=txt.concat(renderLeft(A,r,ltr));
+    }catch(e){
+      $('kqPanel').innerHTML='<div class="kq-txt" style="color:#f08080">Không tải được dữ liệu: '+esc(e.message||e)+'<br>Hãy chạy qua GitHub Pages (không mở file://).</div>';
+    }
+  }else{
+    $('leftoverBox').classList.add('hide');
+  }
+  lastText=txt.join('\n');
+  $('result').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function chip(A,c){return '<span class="kq-chip" style="color:'+A.COLOR_HEX[c.color]+';border-color:'+A.COLOR_HEX[c.color]+'">'+esc(A.lbl(c))+'</span>'}
+const val=(A,t)=>t?esc(t):'<i class="kq-miss">'+A.NODATA+'</i>';
+
+function renderLeft(A,r,cards){
+  const h=[],t=[];
+  h.push('<div class="kq-sub">THỨ TỰ LÁ (TRÁI → PHẢI)</div><div class="kq-head">'+cards.map((c,i)=>'<span class="kq-tag">'+(i+1)+'</span>'+chip(A,c)).join('')+'</div>');
+  h.push('<div class="kq-sub">NGHĨA TỪNG LÁ</div>');t.push('','— Nghĩa từng lá:');
+  r.singles.forEach(x=>{
+    h.push('<div class="kq-item"><div class="kq-head"><span class="kq-tag">LÁ '+x.idx+'</span>'+chip(A,x.card)+'<span class="kq-src">FILE02</span></div>'+
+      '<div class="kq-txt">'+val(A,x.text)+'</div>'+
+      '<span class="kq-lbl">NGHĨA CHUNG (FILE01)</span><div class="kq-txt">'+val(A,x.chung)+'</div>'+
+      '<span class="kq-lbl">'+A.posName(x.card.m)+'</span><div class="kq-txt">'+val(A,x.pos)+'</div></div>');
+    t.push('  Lá '+x.idx+' '+A.lbl(x.card)+': '+(x.text||A.NODATA));
+  });
+  if(r.groups.length){
+    h.push('<div class="kq-sub">LÁ TRÙNG</div>');t.push('— Lá trùng (File06):');
+    r.groups.forEach(g=>{h.push('<div class="kq-item"><div class="kq-head"><span class="kq-tag">'+esc(g.label)+'</span><span class="kq-src">FILE06</span></div><div class="kq-txt">'+val(A,g.text)+'</div></div>');t.push('  '+g.label+': '+(g.text||A.NODATA))});
+  }
+  if(r.pairs.length){
+    h.push('<div class="kq-sub">CẶP LIỀN KỀ</div>');t.push('— Cặp liền kề:');
+    r.pairs.forEach(p=>{
+      h.push('<div class="kq-item"><div class="kq-head"><span class="kq-tag">CẶP '+p.n+'</span>'+chip(A,p.a)+'<span class="kq-tag">⟷</span>'+chip(A,p.b)+(p.src?'<span class="kq-src">'+p.src.toUpperCase()+'</span>':'')+'</div><div class="kq-txt">'+val(A,p.text)+'</div></div>');
+      t.push('  Cặp '+p.n+' ('+A.lbl(p.a)+' — '+A.lbl(p.b)+')'+(p.src?' ['+p.src+']':'')+': '+(p.text||A.NODATA));
+    });
+  }
+  $('kqPanel').innerHTML=h.join('');
+  return t;
+}
+
+$('go').onclick=go;
+$('copyBtn').onclick=()=>{
+  const ok=()=>{$('copyBtn').textContent='✅ ĐÃ SAO CHÉP';setTimeout(()=>$('copyBtn').innerHTML='📜 &nbsp; SAO CHÉP KẾT QUẢ',2000)};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(lastText).then(ok).catch(()=>{});
+  else{const ta=document.createElement('textarea');ta.value=lastText;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();ok()}
+};
+</script>
+</body>
+</html>
