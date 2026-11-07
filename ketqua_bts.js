@@ -443,5 +443,24 @@
   install();
   window.addEventListener('load', install);
 
-  window.KetQua = { run, reload: () => { dbPromise = null; run(); }, config: CONFIG, loadAll };
+  /* API dùng chung cho các module khác (vd: Quẻ Âm Dương) */
+  function analyzeCards(db, cards) {
+    // cards: [{piece,color,m}] theo thứ tự TRÁI → PHẢI
+    return {
+      singles: cards.map((c, j) => {
+        const e = db.f02[c.piece] && db.f02[c.piece][c.color];
+        const f = db.f01[nm(c)];
+        return { idx: j + 1, card: c, text: e ? e[c.m === 'Đ' ? 'Đứng' : 'Ngược'] : null,
+          chung: f ? f.chung : '', pos: f ? (c.m === 'Đ' ? f.D : f.N) : '' };
+      }),
+      groups: groupItems(db, cards),
+      pairs: cards.slice(0, -1).map((a, j) => {
+        const b = cards[j + 1], r = resolvePair(db, a, b);
+        return { n: j + 1, a, b, src: r.src, text: r.text };
+      })
+    };
+  }
+
+  window.KetQua = { run, reload: () => { dbPromise = null; run(); }, config: CONFIG, loadAll,
+    api: { analyzeCards, mk, lbl, posName, esc, COLOR_HEX, NODATA } };
 })();
