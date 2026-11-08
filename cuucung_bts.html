@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<!-- Cho phép zoom (pinch) trên smartphone: KHÔNG đặt maximum-scale / user-scalable=no -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cửu Cung Trận – Tứ Sắc</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#c9a84c;--gold-light:#e8c97a;--gold-dark:#8b6914;--ink:#0d0d0d;--panel:#1a1208;--panel-light:#241a0a;--border:rgba(201,168,76,.4)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{font-family:'EB Garamond',Georgia,serif;background:var(--ink);min-height:100vh;padding:1.25rem .75rem 4rem;color:#e9dfc4;touch-action:pan-x pan-y pinch-zoom}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(201,168,76,.06),transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(26,74,46,.08),transparent 50%);pointer-events:none}
+.wrap{width:100%;max-width:36rem;margin:0 auto;position:relative}
+/* điều khiển zoom cố định */
+.zoombar{position:fixed;right:.5rem;bottom:.75rem;z-index:50;display:flex;align-items:center;gap:.25rem;background:rgba(20,14,5,.92);border:1px solid var(--border);border-radius:2rem;padding:.25rem .4rem;font-size:16px;box-shadow:0 2px 12px rgba(0,0,0,.6)}
+.zoombar button{width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:var(--panel);color:var(--gold-light);font-family:'Cinzel',serif;font-size:15px;font-weight:700;cursor:pointer}
+.zoombar span{min-width:44px;text-align:center;font-family:'Cinzel',serif;font-size:11px;color:var(--gold)}
+.title-banner{text-align:center;padding:1.6rem 1.2rem 1.2rem;margin-bottom:1.1rem;border:1px solid var(--border);border-radius:4px;background:linear-gradient(180deg,var(--panel-light),var(--panel))}
+.title-orn{font-size:.8rem;color:var(--gold);letter-spacing:.4rem;opacity:.7;margin-bottom:.5rem}
+.title-main{font-family:'Cinzel Decorative',cursive;font-size:1.5rem;color:var(--gold-light);text-shadow:0 0 30px rgba(201,168,76,.5)}
+.title-sub{font-family:'Cinzel',serif;font-size:.7rem;color:var(--gold);letter-spacing:.25rem;opacity:.6;margin-top:.4rem}
+.panel{background:var(--panel-light);border:1px solid var(--border);border-radius:4px;padding:1rem;margin-bottom:1rem}
+.row{display:flex;gap:.6rem}
+select{flex:1;min-width:0;padding:.8rem .6rem;background:var(--panel);border:1px solid var(--border);border-radius:3px;color:var(--gold-light);font-family:'Cinzel',serif;font-size:.75rem}
+.btn{padding:.8rem 1rem;background:linear-gradient(135deg,var(--gold-dark),var(--gold),var(--gold-dark));color:var(--ink);border:1px solid var(--gold-light);border-radius:3px;font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;letter-spacing:.06rem;cursor:pointer;white-space:nowrap}
+.btn.ghost{background:var(--panel);color:var(--gold-light)}
+.sec{font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.2rem;color:var(--gold);opacity:.85;text-align:center;margin:1.3rem 0 .6rem}
+.info{font-size:.95rem;color:rgba(201,168,76,.8);text-align:center;margin:.2rem 0 .8rem;font-style:italic;line-height:1.5}
+/* lưới 3x3 */
+.grid{display:grid;grid-template-columns:3.4rem repeat(3,1fr);gap:.4rem;align-items:stretch}
+.ch{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.04rem;color:var(--gold);text-align:center;opacity:.85;line-height:1.2;display:flex;align-items:flex-end;justify-content:center;padding-bottom:.2rem}
+.rh{font-family:'Cinzel',serif;font-size:.55rem;color:var(--gold);opacity:.85;display:flex;align-items:center;line-height:1.2}
+.cell{height:4.6rem;border-radius:4px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;border:1px solid #5a4510;background:repeating-linear-gradient(45deg,#2a1f08,#2a1f08 5px,#1f1706 5px,#1f1706 10px);color:transparent;font-family:'Cinzel',serif;transition:transform .15s}
+.cell:active{transform:scale(.96)}
+.cell .no{position:absolute;top:.15rem;right:.3rem;font-size:.55rem;opacity:.55}
+.cell .nm{font-size:.8rem;font-weight:700;letter-spacing:.03rem;line-height:1;margin-bottom:.25rem}
+.cell .pm{font-family:'EB Garamond',serif;font-size:.95rem;font-weight:600;opacity:.9}
+.cell.up{color:var(--c);border:1px solid var(--c);background:rgba(255,255,255,.04);animation:flip .35s}
+.cell.center.up{box-shadow:0 0 14px var(--c)}
+.cell.center{border-color:var(--gold)}
+@keyframes flip{from{transform:rotateY(90deg);opacity:0}to{transform:rotateY(0);opacity:1}}
+.hide{display:none}
+/* thống kê */
+.stat{background:var(--panel-light);border:1px solid var(--border);border-radius:4px;padding:.9rem 1rem}
+.kv{display:flex;justify-content:space-between;gap:.6rem;padding:.4rem 0;border-top:1px solid rgba(201,168,76,.18);font-size:.95rem;line-height:1.45}
+.kv:first-child{border-top:0}
+.kv b{font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.06rem;color:var(--gold-light);flex:0 0 38%}
+.kv span{text-align:right}
+.tag{display:inline-block;font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;letter-spacing:.05rem;padding:.1rem .5rem;border-radius:2rem;border:1px solid}
+.t-ok{color:#6dbe8c}.t-warn{color:var(--gold-light)}.t-bad{color:#f08080}
+.note{font-size:.8rem;opacity:.6;line-height:1.5;margin-top:.5rem;font-style:italic}
+details{background:var(--panel-light);border:1px solid var(--border);border-radius:4px;margin-bottom:.7rem}
+summary{cursor:pointer;padding:.8rem .9rem;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.1rem;color:var(--gold-light)}
+.body{padding:0 .9rem .9rem}
+.item{border-top:1px solid rgba(201,168,76,.18);padding:.65rem 0}
+.head{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-bottom:.35rem}
+.tg{font-family:'Cinzel',serif;font-size:.6rem;color:var(--gold);opacity:.8;letter-spacing:.06rem}
+.chip{font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;border:1px solid;border-radius:3px;padding:.1rem .45rem}
+.src{font-family:'Cinzel',serif;font-size:.55rem;color:var(--gold);opacity:.55;margin-left:auto}
+.sub{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.12rem;color:var(--gold);opacity:.75;margin:.8rem 0 .1rem}
+.txt{font-size:.95rem;line-height:1.65;white-space:pre-wrap}
+.lbl{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.06rem;color:var(--gold-light);opacity:.8;display:block;margin:.4rem 0 .1rem}
+.miss{opacity:.45}
+.copy{width:100%;padding:.9rem;margin-top:.4rem;background:linear-gradient(135deg,#3a2a0a,#5a4010,#3a2a0a);color:var(--gold-light);border:1px solid var(--gold);border-radius:4px;font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.12rem;font-weight:700;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="title-banner">
+    <div class="title-orn">✦ &nbsp; Trận Pháp Mới &nbsp; ✦</div>
+    <div class="title-main">Cửu Cung Trận</div>
+    <div class="title-sub">Tứ Sắc · Lưới 3×3 Lạc Thư</div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <select id="color">
+        <option value="XANH">✦ CÔNG DANH — XANH</option>
+        <option value="VÀNG">✦ TÀI LỘC — VÀNG</option>
+        <option value="TRẮNG">✦ VẬN HẠN — TRẮNG</option>
+        <option value="ĐỎ">✦ TÌNH DUYÊN — ĐỎ</option>
+      </select>
+      <button class="btn" id="deal">TRẢI BÀI</button>
+    </div>
+  </div>
+
+  <div class="info" id="info">Chọn chủ đề, bấm TRẢI BÀI, rồi chạm từng lá để lật.</div>
+
+  <div id="boardWrap" class="hide">
+    <div class="grid" id="grid"></div>
+    <div class="row" style="margin-top:.8rem">
+      <button class="btn ghost" style="flex:1" id="flipAll">LẬT HẾT</button>
+    </div>
+  </div>
+
+  <div id="out" class="hide">
+    <div class="sec">✦ ĐO LƯỜNG THỐNG KÊ CỦA QUẺ ✦</div>
+    <div class="stat" id="stat"></div>
+
+    <div class="sec">✦ TRUNG CUNG ✦</div>
+    <div id="centerBox"></div>
+
+    <div class="sec">✦ LÁ TRÙNG TOÀN QUẺ ✦</div>
+    <div id="groupBox"></div>
+
+    <div class="sec">✦ 3 HÀNG — THỜI GIAN ✦</div>
+    <div id="rowBox"></div>
+    <div class="sec">✦ 3 CỘT — KHÍA CẠNH ✦</div>
+    <div id="colBox"></div>
+    <div class="sec">✦ 2 ĐƯỜNG CHÉO — XU HƯỚNG ✦</div>
+    <div id="diagBox"></div>
+
+    <button class="copy" id="copyBtn">📜 &nbsp; SAO CHÉP KẾT QUẢ</button>
+  </div>
+</div>
+
+<div class="zoombar" aria-label="Thu phóng">
+  <button id="zOut" aria-label="Thu nhỏ">A−</button><span id="zVal">100%</span><button id="zIn" aria-label="Phóng to">A+</button>
+</div>
+
+<script src="ketqua_bts.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   CỬU CUNG TRẬN — NGUYÊN LÝ TOÁN HỌC
+   ───────────────────────────────────────────────────────────────
+   1. Mẫu ngẫu nhiên: 9 lá rút KHÔNG hoàn lại từ 28 lá (7 quân × 4),
+      bằng Fisher–Yates + crypto.getRandomValues (đều trên mọi hoán vị).
+      Mỗi lá: Đứng/Ngược là phép thử Bernoulli(1/2) độc lập.
+   2. Bố cục 3×3 (Lạc Thư): 9 ô, 8 đường 3 ô (3 hàng, 3 cột, 2 chéo).
+      Hàng = thời gian, cột = khía cạnh (thiết kế 2 nhân tố đầy đủ).
+   3. Đo lường định lượng (kiểm định chính xác, không xấp xỉ):
+      a) Hình thái quân: vector đếm k=(k1..k7) theo phân phối siêu bội
+         đa biến  P(k) = ΠC(4,ki) / C(28,9).  p-value = Σ P(v) với P(v) ≤ P(k).
+      b) Cân bằng Thuận/Nghịch: số lá Đứng d ~ Nhị thức(9, 1/2),
+         p-value hai phía chính xác.
+      c) Độ bất ngờ (surprisal) = −log2 P(k)  (bit).
+═══════════════════════════════════════════════════════════════ */
+function secureRandom(){const b=new Uint32Array(1);crypto.getRandomValues(b);return b[0]/4294967296}
+function secureShuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(secureRandom()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+const PIECES=['TƯỚNG','SĨ','TƯỢNG','XE','PHÁO','NGỰA','CHỐT'];
+const HEX={'XANH':'#6dbe8c','VÀNG':'#e8c97a','TRẮNG':'#d0d0d0','ĐỎ':'#f08080'};
+const LACTHU=[4,9,2,3,5,7,8,1,6];                       // ma phương Lạc Thư (mọi đường tổng 15)
+const ROWS=['QUÁ KHỨ','HIỆN TẠI','TƯƠNG LAI'];
+const COLS=['BẢN THÂN','VIỆC / HOÀN CẢNH','NGƯỜI / NGOẠI CẢNH'];
+const LINES={
+  rows:[[0,1,2],[3,4,5],[6,7,8]],
+  cols:[[0,3,6],[1,4,7],[2,5,8]],
+  diag:[[0,4,8],[2,4,6]]
+};
+const DIAG_NAMES=['↘ Quá khứ·Bản thân → Tương lai·Ngoại cảnh','↙ Quá khứ·Ngoại cảnh → Tương lai·Bản thân'];
+
+/* ── thống kê ── */
+function Cn(n,k){if(k<0||k>n)return 0;let r=1;for(let i=1;i<=k;i++)r=r*(n-k+i)/i;return Math.round(r)}
+const TOTAL=Cn(28,9);
+const PATTERNS=[];
+(function en(i,rem,vec,w){
+  if(i===7){if(rem===0)PATTERNS.push({vec:vec.slice(),p:w/TOTAL});return}
+  for(let k=0;k<=Math.min(4,rem);k++){vec[i]=k;en(i+1,rem-k,vec,w*Cn(4,k))}
+})(0,9,[],1);
+function patternStats(cards){
+  const k=PIECES.map(p=>cards.filter(c=>c.piece===p).length);
+  let w=1;k.forEach(x=>w*=Cn(4,x));
+  const p=w/TOTAL;
+  let pv=0;PATTERNS.forEach(t=>{if(t.p<=p*(1+1e-9))pv+=t.p});
+  return {k,p,pv,bits:-Math.log2(p),profile:k.filter(x=>x>0).sort((a,b)=>b-a).join('-')};
+}
+function orientStats(cards){
+  const d=cards.filter(c=>c.m==='Đ').length;
+  const pm=j=>Cn(9,j)/512;
+  let pv=0;for(let j=0;j<=9;j++)if(pm(j)<=pm(d)*(1+1e-9))pv+=pm(j);
+  return {d,n:9-d,pv};
+}
+function grade(pv){return pv<0.01?['RẤT HIẾM','t-bad']:pv<0.05?['NỔI BẬT','t-warn']:['THƯỜNG','t-ok']}
+const fmtP=p=>p<0.001?p.toExponential(1):p.toFixed(3);
+
+/* ── trải bài ── */
+function dealCards(color){
+  const deck=[];PIECES.forEach(p=>{for(let i=0;i<4;i++)deck.push(p)});
+  return secureShuffle(deck).slice(0,9).map(p=>({piece:p,color:color,m:secureRandom()<0.5?'Đ':'N'}));
+}
+
+/* ── UI ── */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let cards=[],revealed=[],color='XANH',lastText='';
+
+function buildGrid(){
+  const g=$('grid');g.innerHTML='<div></div>'+COLS.map(c=>'<div class="ch">'+c+'</div>').join('');
+  for(let r=0;r<3;r++){
+    g.insertAdjacentHTML('beforeend','<div class="rh">'+ROWS[r]+'</div>');
+    for(let c=0;c<3;c++){
+      const i=r*3+c,d=document.createElement('div');
+      d.className='cell'+(i===4?' center':'');d.id='cell'+i;
+      d.innerHTML='<span class="no">'+LACTHU[i]+'</span><div class="nm"></div><div class="pm"></div>';
+      d.onclick=()=>reveal(i);g.appendChild(d);
+    }
+  }
+}
+function reveal(i){
+  if(revealed[i])return;revealed[i]=true;
+  const el=$('cell'+i),c=cards[i];
+  el.classList.add('up');el.style.setProperty('--c',HEX[color]);
+  el.querySelector('.nm').textContent=c.piece;el.querySelector('.pm').textContent=c.m;
+  const n=revealed.filter(Boolean).length;
+  $('info').textContent=n<9?'Đã lật '+n+'/9 lá.':'Đã lật đủ 9 lá — đang phân tích…';
+  if(n===9)analyze();
+}
+function deal(){
+  color=$('color').value;cards=dealCards(color);revealed=Array(9).fill(false);
+  buildGrid();$('boardWrap').classList.remove('hide');$('out').classList.add('hide');
+  $('info').textContent='Đã xào và trải 9 lá úp. Chạm từng lá để lật (hoặc LẬT HẾT).';
+}
+$('deal').onclick=deal;
+$('flipAll').onclick=()=>{for(let i=0;i<9;i++)reveal(i)};
+
+/* ── phân tích ── */
+const chip=c=>'<span class="chip" style="color:'+KetQua.api.COLOR_HEX[c.color]+';border-color:'+KetQua.api.COLOR_HEX[c.color]+'">'+esc(KetQua.api.lbl(c))+'</span>';
+const val=t=>t?esc(t):'<i class="miss">'+KetQua.api.NODATA+'</i>';
+
+function renderPairsGroups(A,r,txt){
+  let h='';
+  if(r.groups.length){
+    h+='<div class="sub">LÁ TRÙNG</div>';txt.push('  Lá trùng (File06):');
+    r.groups.forEach(g=>{h+='<div class="item"><div class="head"><span class="tg">'+esc(g.label)+'</span><span class="src">FILE06</span></div><div class="txt">'+val(g.text)+'</div></div>';txt.push('    '+g.label+': '+(g.text||A.NODATA))});
+  }
+  h+='<div class="sub">CẶP LIỀN KỀ</div>';txt.push('  Cặp liền kề:');
+  r.pairs.forEach(p=>{
+    h+='<div class="item"><div class="head"><span class="tg">CẶP '+p.n+'</span>'+chip(p.a)+'<span class="tg">⟷</span>'+chip(p.b)+(p.src?'<span class="src">'+p.src.toUpperCase()+'</span>':'')+'</div><div class="txt">'+val(p.text)+'</div></div>';
+    txt.push('    '+A.lbl(p.a)+' — '+A.lbl(p.b)+(p.src?' ['+p.src+']':'')+': '+(p.text||A.NODATA));
+  });
+  return h;
+}
+
+async function analyze(){
+  const ps=patternStats(cards),os=orientStats(cards);
+  const g1=grade(ps.pv),g2=grade(os.pv);
+  const top=Math.max(...ps.k),dom=PIECES.filter((p,i)=>ps.k[i]===top);
+  const domTxt=top>=2?dom.join(', ')+' ×'+top:'không có lá nào trùng';
+  const tilt=os.d>os.n?'thiên về Thuận (Đứng)':os.d<os.n?'thiên về Nghịch (Ngược)':'cân bằng';
+  $('stat').innerHTML=
+    '<div class="kv"><b>HÌNH THÁI QUÂN</b><span>'+ps.profile+' &nbsp;<span class="tag '+g1[1]+'">'+g1[0]+'</span></span></div>'+
+    '<div class="kv"><b>LÁ CHỦ ĐẠO</b><span>'+esc(domTxt)+'</span></div>'+
+    '<div class="kv"><b>XÁC SUẤT HÌNH THÁI</b><span>p = '+fmtP(ps.pv)+' &nbsp;·&nbsp; '+ps.bits.toFixed(1)+' bit</span></div>'+
+    '<div class="kv"><b>THUẬN / NGHỊCH</b><span>'+os.d+' Đ · '+os.n+' N — '+tilt+' &nbsp;<span class="tag '+g2[1]+'">'+g2[0]+'</span></span></div>'+
+    '<div class="kv"><b>XÁC SUẤT THUẬN/NGHỊCH</b><span>p = '+fmtP(os.pv)+'</span></div>'+
+    '<div class="note">p là xác suất (tính chính xác) để một quẻ ngẫu nhiên có hình thái hiếm bằng hoặc hơn quẻ này. p càng nhỏ, quẻ càng khác thường so với ngẫu nhiên thuần túy.</div>';
+  $('out').classList.remove('hide');
+  $('centerBox').innerHTML='<div class="info">Đang tải dữ liệu File01 … File06 …</div>';
+  ['groupBox','rowBox','colBox','diagBox'].forEach(x=>$(x).innerHTML='');
+
+  let txt=['CỬU CUNG TRẬN — TỨ SẮC','Chủ đề màu: '+color,
+    'Hình thái quân: '+ps.profile+' ('+g1[0]+'), p='+fmtP(ps.pv)+', '+ps.bits.toFixed(1)+' bit',
+    'Lá chủ đạo: '+domTxt,
+    'Thuận/Nghịch: '+os.d+'Đ - '+os.n+'N ('+tilt+', '+g2[0]+'), p='+fmtP(os.pv),
+    '','Lưới 3×3 (hàng = Quá khứ/Hiện tại/Tương lai; cột = Bản thân/Việc/Người):'];
+  for(let r=0;r<3;r++)txt.push('  '+[0,1,2].map(c=>KetQua.api.lbl(cards[r*3+c])).join('  |  '));
+
+  try{
+    const db=await KetQua.loadAll(),A=KetQua.api;
+
+    // Trung cung — File01 đầy đủ
+    const cs=A.analyzeCards(db,[cards[4]]).singles[0];
+    $('centerBox').innerHTML='<div class="stat"><div class="head"><span class="tg">TRUNG CUNG</span>'+chip(cs.card)+'<span class="src">FILE01 · FILE02</span></div>'+
+      '<span class="lbl">NGHĨA TỪNG LÁ</span><div class="txt">'+val(cs.text)+'</div>'+
+      '<span class="lbl">NGHĨA CHUNG</span><div class="txt">'+val(cs.chung)+'</div>'+
+      '<span class="lbl">'+A.posName(cs.card.m)+'</span><div class="txt">'+val(cs.pos)+'</div></div>';
+    txt.push('','【 TRUNG CUNG 】',A.lbl(cs.card),'Nghĩa lá: '+(cs.text||A.NODATA),'Nghĩa chung: '+(cs.chung||A.NODATA),A.posName(cs.card.m)+': '+(cs.pos||A.NODATA));
+
+    // Lá trùng toàn quẻ
+    const all=A.analyzeCards(db,cards);
+    txt.push('','【 LÁ TRÙNG TOÀN QUẺ (File06) 】');
+    $('groupBox').innerHTML=all.groups.length?all.groups.map(g=>{txt.push('  '+g.label+': '+(g.text||A.NODATA));return '<div class="item"><div class="head"><span class="tg">'+esc(g.label)+'</span><span class="src">FILE06</span></div><div class="txt">'+val(g.text)+'</div></div>'}).join(''):'<div class="info">Không có quân nào xuất hiện từ 2 lá trở lên.</div>';
+    if(!all.groups.length)txt.push('  (không có)');
+
+    // hàng — có nghĩa từng lá
+    txt.push('','【 3 HÀNG — THỜI GIAN 】');
+    $('rowBox').innerHTML=LINES.rows.map((ln,ri)=>{
+      const cc=ln.map(i=>cards[i]),r=A.analyzeCards(db,cc);txt.push('— '+ROWS[ri]+':');
+      let h='<details'+(ri===1?' open':'')+'><summary>'+ROWS[ri]+'</summary><div class="body"><div class="sub">NGHĨA TỪNG LÁ</div>';
+      r.singles.forEach((x,j)=>{h+='<div class="item"><div class="head"><span class="tg">'+esc(COLS[j])+'</span>'+chip(x.card)+'<span class="src">FILE02</span></div><div class="txt">'+val(x.text)+'</div></div>';txt.push('  '+COLS[j]+' '+A.lbl(x.card)+': '+(x.text||A.NODATA))});
+      return h+renderPairsGroups(A,r,txt)+'</div></details>';
+    }).join('');
+
+    // cột
+    txt.push('','【 3 CỘT — KHÍA CẠNH (trên → dưới = Quá khứ → Tương lai) 】');
+    $('colBox').innerHTML=LINES.cols.map((ln,ci)=>{
+      const r=A.analyzeCards(db,ln.map(i=>cards[i]));txt.push('— '+COLS[ci]+':');
+      return '<details><summary>'+COLS[ci]+'</summary><div class="body">'+renderPairsGroups(A,r,txt)+'</div></details>';
+    }).join('');
+
+    // chéo
+    txt.push('','【 2 ĐƯỜNG CHÉO — XU HƯỚNG 】');
+    $('diagBox').innerHTML=LINES.diag.map((ln,di)=>{
+      const r=A.analyzeCards(db,ln.map(i=>cards[i]));txt.push('— '+DIAG_NAMES[di]+':');
+      return '<details><summary>'+esc(DIAG_NAMES[di])+'</summary><div class="body">'+renderPairsGroups(A,r,txt)+'</div></details>';
+    }).join('');
+  }catch(e){
+    console.error(e);
+    $('centerBox').innerHTML='<div class="txt" style="color:#f08080">Không tải được dữ liệu: '+esc(e.message||e)+'<br>Hãy chạy qua GitHub Pages (không mở file://).</div>';
+  }
+  lastText=txt.join('\n');
+  $('info').textContent='Hoàn tất phân tích.';
+  $('stat').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+$('copyBtn').onclick=()=>{
+  const ok=()=>{$('copyBtn').textContent='✅ ĐÃ SAO CHÉP';setTimeout(()=>$('copyBtn').innerHTML='📜 &nbsp; SAO CHÉP KẾT QUẢ',2000)};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(lastText).then(ok).catch(()=>{});
+  else{const ta=document.createElement('textarea');ta.value=lastText;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();ok()}
+};
+
+/* ── ZOOM: nút A−/A+ (ngoài ra pinch-zoom của trình duyệt vẫn hoạt động) ── */
+let zoom=1;
+try{const s=parseFloat(localStorage.getItem('cuucung_zoom'));if(s>=.8&&s<=2.4)zoom=s}catch(e){}
+function applyZoom(){
+  document.documentElement.style.fontSize=(16*zoom)+'px';
+  $('zVal').textContent=Math.round(zoom*100)+'%';
+  try{localStorage.setItem('cuucung_zoom',zoom)}catch(e){}
+}
+$('zIn').onclick=()=>{zoom=Math.min(2.4,Math.round((zoom+.15)*100)/100);applyZoom()};
+$('zOut').onclick=()=>{zoom=Math.max(.8,Math.round((zoom-.15)*100)/100);applyZoom()};
+applyZoom();
+</script>
+</body>
+</html>
